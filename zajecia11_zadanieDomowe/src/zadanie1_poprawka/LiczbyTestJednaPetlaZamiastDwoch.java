@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.TreeSet;
 
-public class LiczbyTest {
+public class LiczbyTestJednaPetlaZamiastDwoch {
 
     public static void main(String[] args) throws FileNotFoundException {
 
@@ -23,20 +23,16 @@ public class LiczbyTest {
     public static void stworzZbiorLiczb(TreeSet<Integer> liczby) {
         Random random = new Random();
         int liczbaLosowa = 0;
-        int i = 0;
-        int j = 0;
-        int k = 0;
-        for (i = 0; i < 50; i++) {
+        int liczbaUnikalnychLiczb = 0;
+        int liczbaWszystkichLosowanychLiczb = 0;
             do {
                 liczbaLosowa = random.nextInt(1001); //Losowanie liczby od 0 do 1000.
-                j = j+1;
-                //System.out.println(liczbaLosowa + " j=" + j + " liczba wylosowana w pętli");
-            } while (liczby.contains(liczbaLosowa));
-            liczby.add(liczbaLosowa);
-            k = k + 1;
-            //System.out.println(liczbaLosowa + " k=" + k + " liczba unikalna");
-        }
-        System.out.println("\nUtworzono zbiór " + i + " unikalnych liczb spośród " + j + " losowanych liczb.");
+                if(!liczby.contains(liczbaLosowa)){liczbaUnikalnychLiczb++;}
+                liczbaWszystkichLosowanychLiczb++;
+                liczby.add(liczbaLosowa);
+                //System.out.println(liczbaLosowa);
+            } while (liczby.size() < 50);
+        System.out.println("\nUtworzono zbiór " + liczbaUnikalnychLiczb + " unikalnych liczb z " + liczbaWszystkichLosowanychLiczb + " losowanych liczb.");
     }
 
     public static void wyswietlMin(TreeSet<Integer> liczby) {
