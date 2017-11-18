@@ -17,7 +17,7 @@ public class PriceCalculatorTest {
         double result = priceCalculator.calculatePrice(null, null);
 
         // then
-        assertThat(result, is(0.));
+        assertThat(result, is(0.00));
     }
 
     @Test
