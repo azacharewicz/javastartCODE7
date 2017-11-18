@@ -53,5 +53,4 @@ public class PriceCalculatorTest {
         assertThat(result, is(4.79));
     }
 
-
 }
