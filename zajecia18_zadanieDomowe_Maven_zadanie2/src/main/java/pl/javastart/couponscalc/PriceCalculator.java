@@ -7,25 +7,22 @@ import java.util.List;
 public class PriceCalculator {
 
     public double calculatePrice(List<Product> products, List<Coupon> coupons) {
-
-        if(checkIfNoCoupons(products, coupons)) {
+        if (checkIfNoCoupons(products, coupons)) {
             return sum(products);
-        } else if(checkIfOneCouponWithNoCategory(coupons)) {
+        } else if (checkIfOneCouponWithNoCategory(coupons)) {
             double sum = sum(products);
             return addDiscount(sum, coupons);
-        } else if(checkIfOneCoupon(coupons)) {
+        } else if (checkIfOneCoupon(coupons)) {
             double sum = sum(products);
             return addDiscount(sum, coupons);
-
-        } else if(checkIfTwoCoupons(coupons){
-            double sum = sum(products);
-            return addDiscountOnTwoCoupons(sum, coupons);
+        } else if (checkIfTwoCoupons(coupons)){
+            return addDiscountIfTwoCoupons(products, coupons);
         }
         return 0;
     }
 
    /* private List<ProductCategorySumAndDiscount> sumProductsByCategory(
-    		List<Product> products, List<Coupon> coupons){
+            List<Product> products, List<Coupon> coupons){
     	List<ProductCategorySumAndDiscount> sumProducts = new ArrayList<>();
     	for (Product product : products) {
 		}
@@ -43,7 +40,7 @@ public class PriceCalculator {
 
     private double addDiscount(double sum, List<Coupon> coupons) {
         double discount = coupons.get(0).getDiscountValueInPercents();
-        double price = sum - sum*(discount/100);
+        double price = sum - sum * (discount / 100);
         return round(price);
     }
 
@@ -55,8 +52,8 @@ public class PriceCalculator {
 
     private boolean checkIfNoCoupons(
             List<Product> products, List<Coupon> coupons) {
-        return (coupons==null && products!=null)
-                || (coupons !=null && coupons.isEmpty());
+        return (coupons == null && products != null)
+                || (coupons != null && coupons.isEmpty());
     }
 
     private boolean checkIfOneCouponWithNoCategory(List<Coupon> coupons) {
@@ -67,30 +64,31 @@ public class PriceCalculator {
         return coupons != null && coupons.size() == 1 && coupons.get(0).getCategory() != null;
     }
 
-    private boolean checkIfTwoCoupons(List<Coupon> coupons){
+    private boolean checkIfTwoCoupons(List<Coupon> coupons) {
         return coupons != null && coupons.size() == 2
                 && ((coupons.get(0).getCategory() != null) || (coupons.get(1).getCategory() != null));
-        }
+    }
 
 
     //---------------------------------------------------------------------------------------------------------------------
-//    private double addDiscount(List<Product> products, List<Coupon> coupons, double sum) {
-//        double discount1 = coupons.get(0).getDiscountValueInPercents();
-//        double discount2 = coupons.get(1).getDiscountValueInPercents();
-//
-//
-//
-//        double priceDiscount1 = products.get - sum*(discount1/100);
-//        double priceDiscount2 =
-//
-//        if(products.get(0).getCategory().equals(coupons.get(0).getCategory(){}
-//        if(products.get(1).getCategory().equals(coupons.get(0).getCategory()){}
-//
-//        double sum =
-//        double price = sum - sum*(discount1/100);
-//        return round(price);
-//    }
-//
-//
- }
+    private double addDiscountIfTwoCoupons(List<Product> products, List<Coupon> coupons) {
+        int discount1 = coupons.get(0).getDiscountValueInPercents();
+        int discount2 = coupons.get(1).getDiscountValueInPercents();
+        double sum1 = 0.00;
+        double sum2 = 0.00;
+        for (Product product : products) {
+            if (!coupons.get(0).getCategory().equals(product.getCategory())) {
+                sum1 = sum1 + product.getPrice();
+            } else sum1 = (sum1 + product.getPrice()) * (discount1 / 100);
+            sum1 = round(sum1);
+            if (!coupons.get(1).getCategory().equals(product.getCategory())) {
+                sum2 = sum2 + product.getPrice();
+            } else sum2 = (sum2 + product.getPrice()) * (discount2 / 100);
+            sum2 = round(sum2);
+        }
+        if (sum1 > sum2) {
+            return sum1;
+        } else return sum2;
+    }
+}
 
