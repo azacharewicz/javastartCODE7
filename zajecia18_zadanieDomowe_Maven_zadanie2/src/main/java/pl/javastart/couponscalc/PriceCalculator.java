@@ -1,55 +1,67 @@
 package pl.javastart.couponscalc;
 
-import java.util.ArrayList;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 public class PriceCalculator {
 
-    Product product = null;
-    Coupon coupon =  null;
-    List<Product> products = null;
-    List<Coupon> coupons = null;
-    double totalPrice = 0.00;
-    int discount = 0;
-
-
     public double calculatePrice(List<Product> products, List<Coupon> coupons) {
-        if((products == null) && (coupons == null)) {
-            return totalPrice;
+
+        if(checkIfNoCoupons(products, coupons)) {
+            return sum(products);
+        } else if(checkIfOneCouponWithNoCategory(coupons)) {
+            double sum = sum(products);
+            return addDiscount(sum, coupons);
+        } else if(checkIfOneCoupon(coupons)) {
+            double sum = sum(products);
+            return addDiscount(sum, coupons);
         }
-        if(coupons == null){
-               for (Product product: products) {
-               totalPrice = totalPrice + product.getPrice();
-            }
-            return totalPrice;
+
+        return 0;
+    }
+
+   /* private List<ProductCategorySumAndDiscount> sumProductsByCategory(
+    		List<Product> products, List<Coupon> coupons){
+    	List<ProductCategorySumAndDiscount> sumProducts = new ArrayList<>();
+    	for (Product product : products) {
+		}
+
+    	return sumProducts;
+    }*/
+
+    private double sum(List<Product> products) {
+        double sum = 0;
+        for (Product product : products) {
+            sum = sum + product.getPrice();
         }
-        if (coupons.size() == 1){
-            for (Product product: products) {
-                Coupon coupon =  new Coupon(product.getCategory(), discount);
-                discount = coupon.getDiscountValueInPercents();
-                totalPrice = totalPrice + (product.getPrice() * (100 - discount)/100);
-            }
-            return totalPrice;
-        }
-        return totalPrice;
+        return sum;
+    }
+
+    private double addDiscount(double sum, List<Coupon> coupons) {
+        double discount = coupons.get(0).getDiscountValueInPercents();
+        double price = sum - sum*(discount/100);
+        return round(price);
+    }
+
+    private static double round(double price) {
+        BigDecimal roundPrice = new BigDecimal(Double.toString(price));
+        roundPrice = roundPrice.setScale(2, RoundingMode.HALF_UP);
+        return roundPrice.doubleValue();
+    }
+
+    private boolean checkIfNoCoupons(
+            List<Product> products, List<Coupon> coupons) {
+        return (coupons==null && products!=null)
+                || (coupons !=null && coupons.isEmpty());
+    }
+
+    private boolean checkIfOneCouponWithNoCategory(List<Coupon> coupons) {
+        return coupons != null && coupons.size() == 1 && coupons.get(0).getCategory() == null;
+    }
+
+    private boolean checkIfOneCoupon(List<Coupon> coupons) {
+        return coupons != null && coupons.size() == 1 && coupons.get(0).getCategory() != null;
     }
 }
 
-
-//    @Test
-//    public void shouldReturnPriceForSingleProductAndOneCoupon() {
-//
-//        // given
-//        PriceCalculator priceCalculator = new PriceCalculator();
-//        List<Product> products = new ArrayList<>();
-//        products.add(new Product("Masło", 5.99, Category.FOOD));
-//
-//        List<Coupon> coupons = new ArrayList<>();
-//        coupons.add(new Coupon(Category.FOOD, 20));
-//
-//        // when
-//        double result = priceCalculator.calculatePrice(products, coupons);
-//
-//        // then
-//        assertThat(result, is(4.79));
-//    }
