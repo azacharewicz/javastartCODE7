@@ -16,6 +16,9 @@ public class PriceCalculator {
         } else if(checkIfOneCoupon(coupons)) {
             double sum = sum(products);
             return addDiscount(sum, coupons);
+        } else if(checkIfTwoCoupons(coupons)){
+            double sum = sum(products);
+            return addDiscountOnTwoCoupons(sum, coupons);
         }
 
         return 0;
@@ -63,5 +66,31 @@ public class PriceCalculator {
     private boolean checkIfOneCoupon(List<Coupon> coupons) {
         return coupons != null && coupons.size() == 1 && coupons.get(0).getCategory() != null;
     }
+
+//    Więcej niż jeden kod rabatowy:
+//        • kody rabatowe nie łączą się, a w przypadku zastosowania więcej niż jednego
+//        sklep idzie zawsze na rękę klientowi i wybiera najkorzystniejszy rabat.
+
+//        przykład 1:
+//        masło za 6zł i opony za 100zł, oraz kody rabatowe na jedzenie o wartości 50% i na art. samochodowe 10%
+//        - wybrany zostanie kupon na art samochodowe ponieważ obniżka ot 10zł, a spożywczy dałby zniżkę 3zł.
+//
+//        przykład 2:
+//        rabat na wszystko w wysokości 10% oraz rabat na jedzenie w wysokości 50%
+//        - klient kupuje tylko artykuły spożywcze
+//        - powinien zostać zastosowany rabat na jedzenie
+
+
+    private boolean checkIfTwoCoupons(List<Coupon> coupons){
+        return coupons != null && coupons.size() == 2;
+    }
+
+    //poprawiam to teraz
+    private double addDiscountOnTwoCoupons(double sum, List<Coupon> coupons) {
+        double discount = coupons.get(0).getDiscountValueInPercents();
+        double price = sum - sum*(discount/100);
+        return round(price);
+    }
+
 }
 
